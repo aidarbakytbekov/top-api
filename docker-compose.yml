@@ -1,10 +1,11 @@
 version: '3'
 services:
-  top.api:
-    image: top-api:latest
-    container_name: top-api
+  mongo:
+    image: mongo:latest
+    container_name: mongo
     restart: always
-    ports: 
-      - 3001:3001
-    volumes: 
-     - ./.env:/opt/app/.env
+    ports:
+      - 27017:27017
+    volumes:
+      - ./mongo-data-4.4:/data/db
+    command: --wiredTigerCacheSizeGB 1.5

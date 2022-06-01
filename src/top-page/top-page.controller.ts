@@ -3,8 +3,9 @@ import { FindTopPageDto } from './dto/find-top-page.dto';
 import { TopPageService } from './top-page.service';
 import { CreateTopPageDto } from './dto/create-top-page.dto';
 import { IdValidationPipe } from '../pipes/id.validation.pipe';
-import { ValidationPipe, UseGuards } from '@nestjs/common';
+import { ValidationPipe, UseGuards, Logger } from '@nestjs/common';
 import { JwtAuthGuard } from '../guards/jwt.guard';
+import { HhService } from '../hh/hh.service';
 import {
 	Controller,
 	Post,
@@ -19,7 +20,10 @@ import {
 
 @Controller('top-page')
 export class TopPageController {
-	constructor(private readonly topPageService: TopPageService) {}
+	constructor(
+		private readonly topPageService: TopPageService,
+		private readonly hhService: HhService
+	) {}
 
 	@UsePipes(new ValidationPipe())
 	@HttpCode(200)
@@ -61,4 +65,21 @@ export class TopPageController {
 	async find(@Body() dto: FindTopPageDto) {
 		return this.topPageService.findByCategory(dto.firstCategory);
 	}
+	@Get('textSearch/:text')
+	async textSearch(@Param('text') text: string) {
+		return this.topPageService.findByText(text);
+	}
+	@Post('test')
+	async test() {
+		const hhData = await this.hhService.getData('typescript');
+		console.log(hhData)
+		// const data = await this.topPageService.findForHhUpdate(new Date());
+		// for (let page of data) {
+		// 	const hhData = await this.hhService.getData(page.category);
+		// 	console.log(hhData)
+		// 	page.hh = hhData;
+		// 	await this.topPageService.updateById(page._id, page);
+		// }
+	}
 }
+ 
